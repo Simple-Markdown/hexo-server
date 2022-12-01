@@ -49,6 +49,7 @@ public class ServerHandler implements Runnable {
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
+                e.printStackTrace();
                 return;
             }
         }
