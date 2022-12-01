@@ -37,12 +37,23 @@ public class ServerHandler implements Runnable {
                 //后四位是数据
                 int data = bytes[1] << 24 | (bytes[2] & 0xff) << 16 | (bytes[3] & 0xff) << 8 | (bytes[4] & 0xff);
                 //获取data长度的数据
-                ByteBuffer dataBuffer = ByteBuffer.allocate(data);
-                socketChannel.read(dataBuffer);
-                byte[] array = dataBuffer.array();
-                dataBuffer.clear();
+                byte[] dataBytes = new byte[data];
+                ByteBuffer allocate = ByteBuffer.allocate(1024);
+                int read1 = 0;
+                while (read1 < data){
+                    int read2 = socketChannel.read(allocate);
+                    if (read2 == -1){
+                        socketChannel.close();
+                        //连接断开
+                        break;
+                    }
+                    byte[] array = allocate.array();
+                    System.arraycopy(array,0,dataBytes,read1,read2);
+                    read1 += read2;
+                    allocate.clear();
+                }
                 //处理数据
-                handle(id, array);
+                handle(id, dataBytes);
             } catch (Exception e) {
                 try {
                     socketChannel.close();
