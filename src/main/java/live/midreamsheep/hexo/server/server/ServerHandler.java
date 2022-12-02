@@ -1,7 +1,11 @@
 package live.midreamsheep.hexo.server.server;
 
 import live.midreamsheep.hexo.server.config.Config;
+import live.midreamsheep.hexo.server.hand.HandlerInter;
 import live.midreamsheep.hexo.server.hand.HandlerMapper;
+import live.midreamsheep.hexo.server.hand.handlers.Pull;
+import live.midreamsheep.hexo.server.message.queue.QueueApi;
+import live.midreamsheep.hexo.server.message.queue.Task;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -26,8 +30,6 @@ public class ServerHandler implements Runnable {
                 //获取数据信息
                 int read = socketChannel.read(byteBuffer);
                 if (read == -1){
-                    socketChannel.close();
-                    //连接断开
                     break;
                 }
                 byte[] bytes = byteBuffer.array();
@@ -38,13 +40,12 @@ public class ServerHandler implements Runnable {
                 int data = bytes[1] << 24 | (bytes[2] & 0xff) << 16 | (bytes[3] & 0xff) << 8 | (bytes[4] & 0xff);
                 //获取data长度的数据
                 byte[] dataBytes = new byte[data];
+                System.out.println(dataBytes.length);
                 ByteBuffer allocate = ByteBuffer.allocate(1024);
                 int read1 = 0;
                 while (read1 < data){
                     int read2 = socketChannel.read(allocate);
                     if (read2 == -1){
-                        socketChannel.close();
-                        //连接断开
                         break;
                     }
                     byte[] array = allocate.array();
@@ -53,7 +54,7 @@ public class ServerHandler implements Runnable {
                     allocate.clear();
                 }
                 //处理数据
-                handle(id, dataBytes);
+                handle(id, dataBytes,socketChannel);
             } catch (Exception e) {
                 try {
                     socketChannel.close();
@@ -66,8 +67,13 @@ public class ServerHandler implements Runnable {
         }
     }
 
-    private void handle(int id, byte[] array) {
-        HandlerMapper.HANDLER_MAP.get(id).handle(array);
+    private void handle(int id, byte[] array, SocketChannel socketChannel) {
+        HandlerInter handlerInter = HandlerMapper.HANDLER_MAP.get(id);
+        if(handlerInter instanceof Pull){
+            handlerInter.handle(array,socketChannel);
+            return;
+        }
+        QueueApi.addTask(new Task(array, handlerInter,socketChannel));
     }
 
     private boolean checkPassword() {

@@ -6,12 +6,13 @@ import live.midreamsheep.hexo.server.hand.HandlerInter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.channels.SocketChannel;
 
 public class AddFile implements HandlerInter {
     @Override
-    public void handle(byte[] data) {
+    public void handle(byte[] data, SocketChannel socketChannel) {
         String content = new String(data);
-        String path = content.substring(0,content.indexOf("\n"));
+        String path = content.substring(0,content.indexOf("\n")).replace("\\", File.separator);
         File file = new File((Config.nativeHexoPath+path).trim());
         try {
             System.out.println(file.getAbsolutePath());
@@ -35,5 +36,7 @@ public class AddFile implements HandlerInter {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        System.out.println("创建一个文件"+file.getAbsolutePath());
+
     }
 }

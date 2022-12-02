@@ -6,19 +6,20 @@ import live.midreamsheep.hexo.server.tool.patch.FilePatchUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.channels.SocketChannel;
 import java.nio.file.Files;
 import java.util.LinkedList;
 import java.util.List;
 
 public class UpdateAFile implements HandlerInter {
     @Override
-    public void handle(byte[] data) {
+    public void handle(byte[] data, SocketChannel socketChannel) {
         List<String> patch = new LinkedList<>();
         String[] lines = new String(data).split("\n");
         for (int i = 1; i < lines.length; i++) {
             patch.add(lines[i]);
         }
-        String filePath = Config.nativeHexoPath+lines[0];
+        String filePath = (Config.nativeHexoPath+lines[0]).replace("\\", File.separator);
         File file = new File(filePath);
         if(file.exists()){
             if(file.length()==0){
@@ -31,5 +32,6 @@ public class UpdateAFile implements HandlerInter {
             }
             FilePatchUtil.patch(filePath, patch);
         }
+        System.out.println("更新了一个文件"+file.getAbsolutePath());
     }
 }
