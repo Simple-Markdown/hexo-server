@@ -9,15 +9,16 @@ public class QueueApi {
         try {
             queue.put(task);
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
     public static Task getTask(){
         try {
             return queue.take();
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
+        return null;
     }
     public static boolean isEmpty(){
         return queue.isEmpty();

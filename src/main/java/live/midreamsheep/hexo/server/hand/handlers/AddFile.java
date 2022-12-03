@@ -18,7 +18,8 @@ public class AddFile implements HandlerInter {
             System.out.println(file.getAbsolutePath());
             file.createNewFile();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            return;
         }
         int pointor = -1;
         for(int i = 0;i<data.length;i++){
@@ -34,7 +35,8 @@ public class AddFile implements HandlerInter {
         try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
             fileOutputStream.write(datas);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            return;
         }
         System.out.println("创建一个文件"+file.getAbsolutePath());
 

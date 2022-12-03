@@ -26,7 +26,8 @@ public class UpdateAFile implements HandlerInter {
                 try {
                     Files.write(file.toPath(),patch.get(patch.size()-1).substring(1).getBytes());
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    e.printStackTrace();
+                    return;
                 }
                 return;
             }

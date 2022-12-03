@@ -23,6 +23,11 @@ public class ServerHandler implements Runnable {
     public void run() {
         //密码验证
         if(!checkPassword()){
+            try {
+                socketChannel.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             return;
         }
         while (socketChannel.isOpen()){
@@ -59,7 +64,7 @@ public class ServerHandler implements Runnable {
                 try {
                     socketChannel.close();
                 } catch (IOException ex) {
-                    throw new RuntimeException(ex);
+                    ex.printStackTrace();
                 }
                 e.printStackTrace();
                 return;
@@ -92,7 +97,7 @@ public class ServerHandler implements Runnable {
             }
             System.out.println("连接成功");
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
         return true;
     }

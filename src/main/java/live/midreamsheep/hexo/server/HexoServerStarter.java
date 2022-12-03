@@ -26,7 +26,7 @@ public class HexoServerStarter {
                     try {
                         Thread.sleep(200);
                     } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
+                        e.printStackTrace();
                     }
                 }
             }

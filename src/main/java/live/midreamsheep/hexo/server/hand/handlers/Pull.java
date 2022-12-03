@@ -38,7 +38,8 @@ public class Pull implements HandlerInter {
         try {
             Thread.sleep(300);
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            return;
         }
         //文件
         String path = file.getAbsolutePath().replace(new File(Config.nativeHexoPath).getPath(),"");
