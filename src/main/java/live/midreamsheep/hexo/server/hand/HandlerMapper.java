@@ -15,5 +15,7 @@ public class HandlerMapper {
         HANDLER_MAP.put(HandlerEnum.UPDATE_FILE.getId(),new UpdateAFile());
         HANDLER_MAP.put(HandlerEnum.PUSH.getId(),new Push());
         HANDLER_MAP.put(HandlerEnum.PULL.getId(),new Pull());
+        HANDLER_MAP.put(HandlerEnum.SERVER.getId(),new Server());
+        HANDLER_MAP.put(HandlerEnum.SERVER_STOP.getId(),new ServerStop());
     }
 }

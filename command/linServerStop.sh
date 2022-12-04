@@ -1,0 +1,1 @@
+kill -9 `ss -antlup | grep 4000 | awk '{print $7}' | awk -F'[=,]' '{print $3}'`
